@@ -29,3 +29,10 @@ CREATE TABLE sets (
     notes TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
+
+CREATE TABLE routines (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
