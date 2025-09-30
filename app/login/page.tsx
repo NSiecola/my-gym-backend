@@ -39,7 +39,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="flex justify-center items-center h-screen">
       <form onSubmit={handleSubmit}>
         <Card className="w-full max-w-sm">
           <CardHeader>
