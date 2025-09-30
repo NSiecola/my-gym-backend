@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/Header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import ConditionalHeader from "@/components/layout/ConditionalHeader"; // Importamos o novo componente
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,11 +26,10 @@ export default function RootLayout({
           enableSystem={false}
         >
           <TooltipProvider>
-            <Header />
-
-            <main className="container mx-auto px-4 py-8">
+            {/* Usamos o ConditionalHeader para envolver o conteúdo da página */}
+            <ConditionalHeader>
               {children}
-            </main>
+            </ConditionalHeader>
           </TooltipProvider>
         </ThemeProvider>
       </body>
