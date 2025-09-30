@@ -17,9 +17,18 @@ export async function middleware(request: NextRequest) {
 
   try {
     const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
-    await jwtVerify(token, secret);
 
-    return NextResponse.next();
+    const { payload } = await jwtVerify(token, secret);
+
+    const requestHeaders = new Headers(request.headers);
+
+    requestHeaders.set('x-user-id', payload.id as string);
+
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
 
   } catch (error) {
     return NextResponse.json({ message: 'Token inválido ou expirado' }, { status: 401 });

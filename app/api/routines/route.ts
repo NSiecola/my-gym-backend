@@ -1,5 +1,6 @@
 import { db } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
+import { headers } from 'next/headers'; 
 
 /**
  * @description Lista todas as rotinas de um usuário específico.
@@ -33,11 +34,18 @@ export async function GET(request: NextRequest) {
 export async function POST(request: Request) {
     const client = await db.connect();
     try {
-        const body = await request.json();
-        const { name, user_id } = body;
+        const headersList = headers();
+        const userId = (await headersList).get('x-user-id');
 
-        if (!name || !user_id) {
-            return NextResponse.json({ message: 'Nome e user_id são obrigatórios' }, { status: 400 });
+        const body = await request.json();
+        const { name } = body;
+
+        if (!userId) {
+            return NextResponse.json({ message: 'Usuário não autenticado' }, { status: 401 });
+        }
+
+        if (!name) {
+            return NextResponse.json({ message: 'Nome é obrigatório' }, { status: 400 });
         }
 
         const queryText = `
@@ -45,7 +53,7 @@ export async function POST(request: Request) {
             VALUES ($1, $2) 
             RETURNING *;
         `;
-        const queryParams = [name, user_id];
+        const queryParams = [name, userId];
 
         const result = await client.query(queryText, queryParams);
 
