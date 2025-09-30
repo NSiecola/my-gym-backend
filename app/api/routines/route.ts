@@ -3,15 +3,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers'; 
 
 /**
- * @description Lista todas as rotinas de um usuário específico.
+ * @description Lista todas as rotinas de um usuário específico, autenticado via token.
  */
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
     const client = await db.connect();
     try {
-        const userId = request.nextUrl.searchParams.get('userId');
+        const headersList = headers();
+        const userId = (await headersList).get('x-user-id');
 
         if (!userId) {
-            return NextResponse.json({ message: 'O parâmetro userId é obrigatório' }, { status: 400 });
+            return NextResponse.json({ message: 'Não autorizado' }, { status: 401 });
         }
 
         const queryText = 'SELECT * FROM routines WHERE user_id = $1 ORDER BY name ASC';

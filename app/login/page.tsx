@@ -1,20 +1,21 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'; 
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  // Função que é executada quando o usuário clica no botão "Entrar"
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // Impede o recarregamento padrão da página
-    setError(''); // Limpa erros de tentativas anteriores
+    e.preventDefault();
+    setError('');
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -31,7 +32,7 @@ export default function LoginPage() {
 
       localStorage.setItem('authToken', data.token);
 
-      alert('Login bem-sucedido! O token foi salvo no navegador.');
+      router.push('/dashboard');
 
     } catch (err: any) {
       setError(err.message);
@@ -48,26 +49,12 @@ export default function LoginPage() {
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <Input id="email" type="email" placeholder="seu@email.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
-            {/* Exibe a mensagem de erro da API, se houver */}
             {error && <p className="text-sm text-red-500">{error}</p>}
           </CardContent>
           <CardFooter>

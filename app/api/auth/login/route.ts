@@ -1,8 +1,7 @@
-// app/api/auth/login/route.ts
 import { db } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken'; 
+import { SignJWT } from 'jose';
 
 export async function POST(request: Request) {
     const client = await db.connect();
@@ -15,28 +14,31 @@ export async function POST(request: Request) {
         }
 
         const queryText = 'SELECT * FROM users WHERE email = $1';
-        const queryParams = [email];
-        const result = await client.query(queryText, queryParams);
+        const result = await client.query(queryText, [email]);
 
         if (result.rows.length === 0) {
             return NextResponse.json({ message: 'Credenciais inválidas' }, { status: 401 });
         }
 
         const user = result.rows[0];
-
         const passwordsMatch = await bcrypt.compare(password, user.password_hash);
 
         if (!passwordsMatch) {
             return NextResponse.json({ message: 'Credenciais inválidas' }, { status: 401 });
         }
-
+        
         const payload = {
             id: user.id,
             email: user.email,
         };
 
-        const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '1h' });
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
+        const token = await new SignJWT(payload)
+            .setProtectedHeader({ alg: 'HS256' })
+            .setExpirationTime('1h')
+            .sign(secret);
+        
         return NextResponse.json({
             message: 'Login bem-sucedido',
             token: token
