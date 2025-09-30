@@ -1,6 +1,8 @@
+// app/api/auth/login/route.ts
 import { db } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken'; 
 
 export async function POST(request: Request) {
     const client = await db.connect();
@@ -11,13 +13,13 @@ export async function POST(request: Request) {
         if (!email || !password) {
             return NextResponse.json({ message: 'Email e senha são obrigatórios' }, { status: 400 });
         }
-        
+
         const queryText = 'SELECT * FROM users WHERE email = $1';
         const queryParams = [email];
         const result = await client.query(queryText, queryParams);
 
         if (result.rows.length === 0) {
-            return NextResponse.json({ message: 'Credenciais inválidas' }, { status: 401 }); // 401 Unauthorized
+            return NextResponse.json({ message: 'Credenciais inválidas' }, { status: 401 });
         }
 
         const user = result.rows[0];
@@ -27,12 +29,17 @@ export async function POST(request: Request) {
         if (!passwordsMatch) {
             return NextResponse.json({ message: 'Credenciais inválidas' }, { status: 401 });
         }
-        
-        const { password_hash, ...userWithoutPassword } = user;
+
+        const payload = {
+            id: user.id,
+            email: user.email,
+        };
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '1h' });
 
         return NextResponse.json({
             message: 'Login bem-sucedido',
-            user: userWithoutPassword
+            token: token
         });
 
     } catch (error) {
