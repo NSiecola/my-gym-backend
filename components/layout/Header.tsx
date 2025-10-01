@@ -2,7 +2,8 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
+import { LogOut, Dumbbell } from 'lucide-react';
+
 import {
   Tooltip,
   TooltipContent,
@@ -22,8 +23,10 @@ export default function Header() {
   return (
     <header className="border-b bg-card">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">MyGym</h1>
-
+        <div className="flex items-center gap-3">
+          <Dumbbell className="h-7 w-7 text-white" />
+          <h1 className="text-2xl font-bold text-foreground">MyGym</h1>
+        </div>
         {pathname !== '/login' && pathname !== '/register' && (
           <TooltipProvider>
             <Tooltip>
