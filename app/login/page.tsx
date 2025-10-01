@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Dumbbell, Mail, Lock } from 'lucide-react';
+import { Dumbbell, Mail, Lock, Zap, History, Plus } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,8 +35,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-black">
-      <Card className="w-full max-w-md bg-[#18181B] border-gray-800">
+    <div className="flex flex-col justify-center items-center min-h-screen bg-black p-4">
+      <Card className="w-full max-w-md bg-[#18181B] border-gray-800 z-10">
         <CardContent className="p-8 space-y-6">
 
           <div className="text-center space-y-2">
@@ -80,7 +80,6 @@ export default function LoginPage() {
 
             {error && <p className="text-sm text-red-500 text-center">{error}</p>}
 
-            {/* MUDANÇA AQUI: Adicionamos a classe 'cursor-pointer' */}
             <Button className="w-full bg-white text-black hover:bg-gray-200 font-bold cursor-pointer" type="submit">
               Entrar
             </Button>
@@ -95,6 +94,41 @@ export default function LoginPage() {
 
         </CardContent>
       </Card>
+
+      <section className="w-full max-w-4xl mt-16 text-white">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+
+          <div className="flex flex-col items-center space-y-3">
+            <div className="p-3 border border-gray-800 rounded-lg bg-[#18181B]">
+              <Zap className="h-6 w-6 text-white" />
+            </div>
+            <h3 className="font-bold text-lg">Simples e Rápido</h3>
+            <p className="text-sm text-gray-400">
+              Registre suas séries em segundos durante o treino.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-center space-y-3">
+            <div className="p-3 border border-gray-800 rounded-lg bg-[#18181B]">
+              <History className="h-6 w-6 text-white" />
+            </div>
+            <h3 className="font-bold text-lg">Histórico Completo</h3>
+            <p className="text-sm text-gray-400">
+              Acompanhe sua evolução exercício por exercício.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-center space-y-3">
+            <div className="p-3 border border-gray-800 rounded-lg bg-[#18181B]">
+              <Plus className="h-6 w-6 text-white" />
+            </div>
+            <h3 className="font-bold text-lg">Totalmente Customizável</h3>
+            <p className="text-sm text-gray-400">
+              Crie suas rotinas e exercícios personalizados.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
